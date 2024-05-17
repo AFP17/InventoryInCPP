@@ -1,12 +1,11 @@
 #include <iostream>
 #include <map>
 #include <string>
-#include <iomanip> // For std::setw and std::setfill
+#include <iomanip> 
 
 class InventoryManager {
 private:
-    std::map<std::string, long long> inventory; // Using long long for larger quantities
-
+    std::map<std::string, long long> inventory; 
 public:
     // Add or update items in the inventory
     void addItem(const std::string& item, long long quantity) {
@@ -15,7 +14,7 @@ public:
             return;
         }
         long long newQuantity = inventory[item] + quantity;
-        if (newQuantity < inventory[item]) { // Check for overflow
+        if (newQuantity < inventory[item]) { 
             std::cout << "Quantity too large to add.\n";
             return;
         }
@@ -88,7 +87,7 @@ int main() {
             default:
                 std::cout << "Invalid choice. Please try again.\n";
         }
-        std::cout << "\n"; // Add a new line for better spacing in the terminal output
+        std::cout << "\n"; 
     }
 
     return 0;
