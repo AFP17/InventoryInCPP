@@ -1,20 +1,34 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <iomanip> // For std::setw and std::setfill
 
 class InventoryManager {
 private:
-    std::map<std::string, int> inventory;
+    std::map<std::string, long long> inventory; // Using long long for larger quantities
 
 public:
     // Add or update items in the inventory
-    void addItem(const std::string& item, int quantity) {
-        inventory[item] += quantity;
+    void addItem(const std::string& item, long long quantity) {
+        if (quantity <= 0 || quantity > 1000000) { // Limit to reasonable additions
+            std::cout << "Invalid quantity. Please enter a value between 1 and 1,000,000.\n";
+            return;
+        }
+        long long newQuantity = inventory[item] + quantity;
+        if (newQuantity < inventory[item]) { // Check for overflow
+            std::cout << "Quantity too large to add.\n";
+            return;
+        }
+        inventory[item] = newQuantity;
         std::cout << "Added " << quantity << " units of " << item << ".\n";
     }
 
     // Remove items from the inventory
-    bool removeItem(const std::string& item, int quantity) {
+    bool removeItem(const std::string& item, long long quantity) {
+        if (quantity <= 0 || quantity > 1000000) { // Limit to reasonable removals
+            std::cout << "Invalid quantity. Please enter a value between 1 and 1,000,000.\n";
+            return false;
+        }
         if (inventory.find(item) != inventory.end() && inventory[item] >= quantity) {
             inventory[item] -= quantity;
             if (inventory[item] == 0) {
@@ -34,29 +48,27 @@ public:
         } else {
             std::cout << "Inventory:\n";
             for (const auto& item : inventory) {
-                std::cout << item.first << ": " << item.second << " units\n";
+                std::cout << std::setw(20) << std::left << item.first << ": "
+                          << std::setw(10) << std::right << item.second << " units\n";
             }
         }
     }
 };
 
-int main() 
-{
+int main() {
     InventoryManager manager;
     bool running = true;
 
-    while (running) 
-    {
+    while (running) {
         std::cout << "1. Add Item\n2. Remove Item\n3. Display Inventory\n4. Exit\nEnter your choice: ";
         int choice;
         std::cin >> choice;
         std::cin.ignore();
 
         std::string item;
-        int quantity;
+        long long quantity;
 
-        switch (choice) 
-        {
+        switch (choice) {
             case 1:
                 std::cout << "Enter item name and quantity to add (e.g., Apples 10): ";
                 std::cin >> item >> quantity;
@@ -78,5 +90,6 @@ int main()
         }
         std::cout << "\n"; // Add a new line for better spacing in the terminal output
     }
+
     return 0;
 }
